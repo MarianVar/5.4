@@ -18,7 +18,7 @@ struct Student {
 
 void Create(const char* fname);
 void Print(const char* fname);
-void fWrite(fstream& f, const int i, Student s);
+void fWrite(ofstream& f, const int i, Student s);
 Student fRead(fstream& f, const int i);
 void Add(const char* fname);
 
@@ -157,7 +157,7 @@ void fPrint(fstream& f, int i)
 
 }
 
-void fWrite(fstream& f, const int i, Student s) {
+void fWrite(ofstream& f, const int i, Student s) {
 	f.seekp(i * (long)sizeof(Student));
 	f.write((char*)&s, sizeof(Student));
 }
@@ -232,10 +232,9 @@ void  SearchTXTStudentWith(const char* fname, int cheker, const int count) {
 
 int  SearchAndRemoteTXTStudentWithTwo(const char* fname, int cheker, const int count)
 {
-
+	ofstream t("tmp", ios::binary );
 	fstream fin(fname, ios::binary | ios::out | ios::in);
-	fstream t("tmp", ios::binary | ios::in | ios::out);
-	t.seekg(0, ios::end);
+	
 	cin.ignore();
 	fin.seekg(0, ios::end);
 	int size = fin.tellg() / sizeof(Student);
@@ -270,20 +269,24 @@ int  SearchAndRemoteTXTStudentWithTwo(const char* fname, int cheker, const int c
 					}
 			}
 		}
+		
 		if (!isUsed == true)
 		{
 			if (!t.write((char*)&tmp, sizeof(Student))) {
 				cerr << "Error writing file." << endl;
+				
 			}
 
 		}
-		fin.close(); // для вилучення і перейменування
-		t.close(); // файли мають бути закриті
 
-		remove(fname); // знищуємо заданий файл
-		rename("tmp", fname); // перейменовуємо тимчасовий файл
-		return rem;
 	}
+	fin.close(); // для вилучення і перейменування
+	t.close(); // файли мають бути закриті
+
+	remove(fname); // знищуємо заданий файл
+	rename("tmp", fname); // перейменовуємо тимчасовий файл
+
+	return rem;
 }
 
 void CreateFileToUnit()
